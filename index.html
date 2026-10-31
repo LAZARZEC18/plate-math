@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en-AU" data-app="plate-math">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plate Math — barbell loader and lift calculator</title>
+<meta name="description" content="Type a weight and see exactly which plates go on each side of the bar. Estimate your max, plan warm-ups, run 5/3/1 and log every set.">
+<meta property="og:title" content="Plate Math">
+<meta property="og:description" content="Type a weight and see exactly which plates go on each side of the bar. Estimate your max, plan warm-ups, run 5/3/1 and log every set.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://lz-plate-math.pages.dev/">
+<meta property="og:image" content="https://lz-plate-math.pages.dev/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="zl.css">
+<link rel="stylesheet" href="styles.css">
+<script src="zl.js"></script>
+</head>
+<body id="top">
+<div data-zl="nav"></div>
+
+<main>
+  <section class="zl-hero zl-wrap">
+    <div data-zl="icon"></div>
+    <h1>Plate Math</h1>
+    <p class="zl-tagline">Know what goes on the bar.</p>
+    <p class="zl-sub">Type a weight and see exactly which plates go on each side, drawn to scale. Then estimate your max, ramp your warm-up, run 5/3/1 and log every set.</p>
+    <div class="zl-hero-ctas">
+      <a class="zl-btn zl-btn-primary zl-btn-lg" href="#app">Load the bar</a>
+      <a class="zl-btn zl-btn-secondary zl-btn-lg" href="#how">See how it works</a>
+    </div>
+    <div class="zl-hero-meta">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Free, no sign-up</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Saved on your device</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Kilograms or pounds</span>
+    </div>
+  </section>
+
+  <section class="zl-stage" id="app" data-nav="App">
+    <div class="zl-wrap">
+      <div class="zl-app">
+        <div class="zl-appbar">
+          <div class="zl-appbar-title"><span class="zl-dot"></span>Plate Math <span class="zl-appbar-status" id="status" aria-live="polite">Saved</span></div>
+          <div class="zl-seg" id="units" role="group" aria-label="Units">
+            <button type="button" data-u="kg" aria-pressed="true">kg</button>
+            <button type="button" data-u="lb" aria-pressed="false">lb</button>
+          </div>
+          <button type="button" class="zl-btn zl-btn-secondary zl-btn-sm" id="example">Load example</button>
+        </div>
+
+        <div class="pm-tabs" role="tablist" aria-label="Tools">
+          <button type="button" role="tab" id="tab-load" aria-controls="panel-load" aria-selected="true" data-tab="load"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12h20"/><path d="M6 8v8M9 5.5v13M15 5.5v13M18 8v8" stroke-width="2.4"/></svg><span>Load</span></button>
+          <button type="button" role="tab" id="tab-rm" aria-controls="panel-rm" aria-selected="false" data-tab="rm" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17.5a8 8 0 1 1 16 0"/><path d="M12 17.5l4-5"/><circle cx="12" cy="17.5" r="1.2" fill="currentColor"/></svg><span>1RM</span></button>
+          <button type="button" role="tab" id="tab-warm" aria-controls="panel-warm" aria-selected="false" data-tab="warm" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 19v-3M10 19v-6M15 19v-9M20 19V6"/></svg><span>Warm-up</span></button>
+          <button type="button" role="tab" id="tab-program" aria-controls="panel-program" aria-selected="false" data-tab="program" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg><span>Program</span></button>
+          <button type="button" role="tab" id="tab-log" aria-controls="panel-log" aria-selected="false" data-tab="log" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5h16"/><path d="M5 15l4-4 3 3 7-7.5"/></svg><span>Log</span></button>
+          <button type="button" role="tab" id="tab-plates" aria-controls="panel-plates" aria-selected="false" data-tab="plates" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.5"/></svg><span>My plates</span></button>
+        </div>
+
+        <!-- 1. Load the bar -->
+        <section class="pm-panel" role="tabpanel" id="panel-load" aria-labelledby="tab-load">
+          <div class="pm-load-top">
+            <div class="pm-target">
+              <label class="zl-label" for="target">Target weight</label>
+              <div class="pm-stepper">
+                <button type="button" class="pm-step" id="minus" aria-label="Remove 2.5 kg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 12h12"/></svg><small id="minus-amt" class="num">2.5</small></button>
+                <div class="pm-target-wrap">
+                  <span class="pm-autosize num" data-value="100"><input id="target" class="pm-target-input num" size="1" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="100" aria-describedby="step-hint target-error"></span>
+                  <span class="pm-target-unit" id="target-unit">kg</span>
+                </div>
+                <button type="button" class="pm-step" id="plus" aria-label="Add 2.5 kg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 12h12M12 6v12"/></svg><small id="plus-amt" class="num">2.5</small></button>
+              </div>
+              <p class="zl-error" id="target-error" hidden></p>
+              <p class="zl-hint" id="step-hint">Steps of 2.5 kg, one pair of your smallest plates.</p>
+            </div>
+            <div class="pm-summary" id="summary" aria-live="polite"></div>
+          </div>
+
+          <figure class="pm-bar-stage">
+            <svg id="barbell" class="pm-barbell" role="img" aria-label="Barbell"></svg>
+            <figcaption class="pm-bar-caption" id="bar-caption"></figcaption>
+          </figure>
+
+          <div class="pm-load-foot">
+            <div class="pm-stats" id="load-stats"></div>
+            <div class="pm-bar-opts">
+              <div class="zl-field">
+                <span class="zl-label" id="bar-label">Bar</span>
+                <div class="zl-seg" id="bar-seg" role="group" aria-labelledby="bar-label"></div>
+              </div>
+              <div class="zl-field" id="custom-wrap" hidden>
+                <label class="zl-label" for="bar-custom">Custom bar weight</label>
+                <div class="pm-suffix"><input id="bar-custom" class="zl-input num" type="text" inputmode="decimal" autocomplete="off" aria-describedby="bar-custom-error"><span data-unit>kg</span></div>
+                <p class="zl-error" id="bar-custom-error" hidden></p>
+              </div>
+              <div class="zl-field">
+                <label class="zl-switch"><input type="checkbox" id="collars"> <span>Collars</span></label>
+                <span class="zl-hint" id="collars-hint">Adds 2.5 kg a pair.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. 1RM -->
+        <section class="pm-panel" role="tabpanel" id="panel-rm" aria-labelledby="tab-rm" hidden>
+          <div class="pm-split">
+            <div class="pm-form">
+              <div class="pm-panel-head"><h2>Estimate your max</h2><p>Enter a set you just finished. Estimates are most reliable between 2 and 10 reps.</p></div>
+              <div class="zl-field">
+                <span class="zl-label" id="rm-mode-label">Method</span>
+                <div class="zl-seg" id="rm-mode" role="group" aria-labelledby="rm-mode-label">
+                  <button type="button" data-mode="reps" aria-pressed="true">Reps</button>
+                  <button type="button" data-mode="rpe" aria-pressed="false">Reps and RPE</button>
+                </div>
+              </div>
+              <div class="pm-fields">
+                <div class="zl-field">
+                  <label class="zl-label" for="rm-w">Weight lifted</label>
+                  <div class="pm-suffix"><input id="rm-w" class="zl-input num" type="text" inputmode="decimal" autocomplete="off" value="100"><span data-unit>kg</span></div>
+                </div>
+                <div class="zl-field">
+                  <label class="zl-label" for="rm-r">Reps</label>
+                  <input id="rm-r" class="zl-input num" type="text" inputmode="numeric" autocomplete="off" value="5">
+                </div>
+                <div class="zl-field" id="rpe-wrap" hidden>
+                  <label class="zl-label" for="rm-rpe">RPE</label>
+                  <select id="rm-rpe" class="zl-select"></select>
+                </div>
+              </div>
+              <p class="zl-error" id="rm-error" hidden></p>
+              <p class="zl-hint" id="rpe-hint" hidden>RPE is how hard the set felt. 10 means no reps left, 8 means two left in the tank.</p>
+            </div>
+            <div class="pm-rm-result" id="rm-result" aria-live="polite">
+              <span class="zl-label" id="rm-caption">Estimated one-rep max</span>
+              <div class="pm-big num"><span id="rm-avg">–</span><span class="pm-big-unit" data-unit>kg</span></div>
+              <p class="pm-big-sub" id="rm-sub">Average of three formulas</p>
+              <dl class="pm-methods" id="rm-methods"></dl>
+            </div>
+          </div>
+          <div class="pm-table-wrap">
+            <table class="pm-table" id="pct-table">
+              <caption class="sr-only">Percentages of your estimated max, rounded to weights you can load</caption>
+              <thead><tr><th scope="col">Percent</th><th scope="col">Exact</th><th scope="col">Load</th><th scope="col"><span class="sr-only">Action</span></th></tr></thead>
+              <tbody id="pct-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 3. Warm-up -->
+        <section class="pm-panel" role="tabpanel" id="panel-warm" aria-labelledby="tab-warm" hidden>
+          <div class="pm-warm-head">
+            <div class="pm-panel-head"><h2>Ramp up to your working weight</h2><p>Each set is rounded to a weight your plates can make. Tick them off as you go.</p></div>
+            <div class="pm-warm-controls">
+              <div class="zl-field">
+                <label class="zl-label" for="warm-w">Working weight</label>
+                <div class="pm-suffix"><input id="warm-w" class="zl-input num" type="text" inputmode="decimal" autocomplete="off" value="100"><span data-unit>kg</span></div>
+              </div>
+              <button type="button" class="zl-btn zl-btn-secondary" id="warm-use">Use loader weight</button>
+            </div>
+            <p class="zl-error" id="warm-error" hidden></p>
+          </div>
+          <div class="pm-progress" id="warm-progress">
+            <div class="pm-progress-text"><b id="warm-count" class="num">0 of 5</b> <span>sets done</span></div>
+            <div class="pm-progress-bar" role="progressbar" aria-labelledby="warm-count" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0" id="warm-bar"><span></span></div>
+            <button type="button" class="zl-btn zl-btn-ghost zl-btn-sm" id="warm-reset">Reset ticks</button>
+          </div>
+          <ol class="pm-sets" id="warm-sets"></ol>
+        </section>
+
+        <!-- 4. Program -->
+        <section class="pm-panel" role="tabpanel" id="panel-program" aria-labelledby="tab-program" hidden>
+          <div class="pm-panel-head"><h2>5/3/1 calculator</h2><p>Enter your one-rep maxes. Every set is a percentage of your training max, rounded to a weight you can load. Tap a set to load it.</p></div>
+          <div class="pm-prog-inputs">
+            <div class="zl-field"><label class="zl-label" for="p-squat">Squat 1RM</label><div class="pm-suffix"><input id="p-squat" data-lift="squat" class="zl-input num pm-lift-in" type="text" inputmode="decimal" autocomplete="off"><span data-unit>kg</span></div></div>
+            <div class="zl-field"><label class="zl-label" for="p-bench">Bench 1RM</label><div class="pm-suffix"><input id="p-bench" data-lift="bench" class="zl-input num pm-lift-in" type="text" inputmode="decimal" autocomplete="off"><span data-unit>kg</span></div></div>
+            <div class="zl-field"><label class="zl-label" for="p-deadlift">Deadlift 1RM</label><div class="pm-suffix"><input id="p-deadlift" data-lift="deadlift" class="zl-input num pm-lift-in" type="text" inputmode="decimal" autocomplete="off"><span data-unit>kg</span></div></div>
+            <div class="zl-field"><label class="zl-label" for="p-press">Press 1RM</label><div class="pm-suffix"><input id="p-press" data-lift="press" class="zl-input num pm-lift-in" type="text" inputmode="decimal" autocomplete="off"><span data-unit>kg</span></div></div>
+            <div class="zl-field"><label class="zl-label" for="p-tm">Training max</label><div class="pm-suffix"><input id="p-tm" class="zl-input num" type="text" inputmode="decimal" autocomplete="off" value="90" aria-describedby="p-tm-hint"><span>%</span></div><span class="zl-hint" id="p-tm-hint">85–90% is standard.</span></div>
+          </div>
+          <p class="zl-error" id="p-error" hidden></p>
+          <div class="pm-prog-bar">
+            <div class="zl-seg" id="p-lift" role="group" aria-label="Lift">
+              <button type="button" data-lift="squat" aria-pressed="true">Squat</button>
+              <button type="button" data-lift="bench" aria-pressed="false">Bench</button>
+              <button type="button" data-lift="deadlift" aria-pressed="false">Deadlift</button>
+              <button type="button" data-lift="press" aria-pressed="false">Press</button>
+            </div>
+            <button type="button" class="zl-btn zl-btn-ghost zl-btn-sm" id="p-fill" data-tip="Uses your best estimated max per lift">Fill from log</button>
+          </div>
+          <div class="pm-prog" id="p-table" aria-live="polite"></div>
+        </section>
+
+        <!-- 5. Log -->
+        <section class="pm-panel" role="tabpanel" id="panel-log" aria-labelledby="tab-log" hidden>
+          <form class="pm-log-form" id="log-form" novalidate>
+            <div class="zl-field pm-f-ex">
+              <label class="zl-label" for="l-ex">Exercise</label>
+              <select id="l-ex" class="zl-select"></select>
+            </div>
+            <div class="zl-field pm-f-custom" id="l-custom-wrap" hidden>
+              <label class="zl-label" for="l-custom">Exercise name</label>
+              <input id="l-custom" class="zl-input" type="text" autocomplete="off" maxlength="40" placeholder="Pause squat">
+            </div>
+            <div class="zl-field pm-f-w">
+              <label class="zl-label" for="l-w">Weight</label>
+              <div class="pm-suffix"><input id="l-w" class="zl-input num" type="text" inputmode="decimal" autocomplete="off"><span data-unit>kg</span></div>
+            </div>
+            <div class="zl-field pm-f-r">
+              <label class="zl-label" for="l-r">Reps</label>
+              <input id="l-r" class="zl-input num" type="text" inputmode="numeric" autocomplete="off" value="5">
+            </div>
+            <div class="zl-field pm-f-d">
+              <label class="zl-label" for="l-d">Date</label>
+              <input id="l-d" class="zl-input" type="date">
+            </div>
+            <button type="submit" class="zl-btn zl-btn-primary pm-f-add" id="l-add">Add set</button>
+            <p class="zl-error pm-f-err" id="l-error" hidden></p>
+          </form>
+
+          <div class="pm-log-body" id="log-body">
+            <div class="pm-chart-card">
+              <div class="pm-chart-head">
+                <div>
+                  <h2 class="pm-h3">Estimated 1RM</h2>
+                  <p class="zl-hint">Best set of each session. Rings mark personal records.</p>
+                </div>
+                <div class="zl-seg" id="chart-ex" role="group" aria-label="Exercise to chart"></div>
+              </div>
+              <div class="pm-chart-stats" id="chart-stats"></div>
+              <div class="pm-chart" id="chart"></div>
+            </div>
+            <div class="pm-history-head">
+              <h2 class="pm-h3">History</h2>
+              <button type="button" class="zl-btn zl-btn-secondary zl-btn-sm" id="export"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14"/></svg>Export CSV</button>
+            </div>
+            <div class="pm-history" id="history"></div>
+            <button type="button" class="zl-btn zl-btn-ghost pm-more" id="history-more" hidden>Show older sessions</button>
+          </div>
+          <div class="zl-empty" id="log-empty" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5h16"/><path d="M5 15l4-4 3 3 7-7.5"/></svg>
+            <h3>No sets logged yet</h3>
+            <p>Add a set above and your estimated max starts charting. Or load eight weeks of example sessions to see how it looks.</p>
+            <button type="button" class="zl-btn zl-btn-primary" id="log-example">Load example</button>
+          </div>
+        </section>
+
+        <!-- 6. Plates I own -->
+        <section class="pm-panel" role="tabpanel" id="panel-plates" aria-labelledby="tab-plates" hidden>
+          <div class="pm-plates-head">
+            <div class="pm-panel-head"><h2>Plates I own</h2><p>Set how many pairs of each plate your gym has. Every calculation in Plate Math uses only these.</p></div>
+            <div class="pm-stats" id="plate-stats"></div>
+          </div>
+          <ul class="pm-plate-rows" id="plate-rows"></ul>
+          <div class="pm-plates-foot">
+            <p class="zl-hint" id="plates-note">A pair is one plate for each side.</p>
+            <button type="button" class="zl-btn zl-btn-secondary" id="reset-plates">Reset to a standard set</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <section class="zl-section alt" id="how" data-nav="How it works">
+    <div class="zl-wrap">
+      <div class="zl-section-head zl-reveal"><h2>Set it up once. Then just lift.</h2><p>Plate Math learns your gym, then answers the one question you have between sets.</p></div>
+      <div class="zl-steps zl-reveal">
+        <div class="zl-step"><h3>Tell it your plates</h3><p>Count the pairs on your rack and pick your bar. Every answer from then on uses only what you have.</p></div>
+        <div class="zl-step"><h3>Type a weight</h3><p>The plates for each side appear on a barbell drawn to scale. If it can't be made, you get the closest weights either side.</p></div>
+        <div class="zl-step"><h3>Lift and log</h3><p>Tick off your warm-ups, log your working sets and watch your estimated max climb week to week.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="zl-section" id="features" data-nav="Features">
+    <div class="zl-wrap">
+      <div class="zl-section-head zl-reveal"><h2>Everything between sets.</h2><p>Six tools that share one plate inventory, so every number you see is one you can actually load.</p></div>
+      <div class="zl-bento zl-reveal">
+        <div class="zl-tile wide">
+          <h3>Only the plates you own.</h3>
+          <p>Tell it you have two pairs of 20s and it never asks for three. It tries the heaviest plates first, then searches every combination you own for an exact match.</p>
+          <div class="zl-tile-visual pm-v-rack" aria-hidden="true">
+            <div><i style="--h:100%;--c:#D7263D"></i><i style="--h:100%;--c:#D7263D"></i><b>25 × 4</b></div>
+            <div><i style="--h:100%;--c:#1E5BC6"></i><b>20 × 2</b></div>
+            <div><i style="--h:89%;--c:#F2C230"></i><b>15 × 2</b></div>
+            <div><i style="--h:72%;--c:#23864A"></i><b>10 × 2</b></div>
+            <div><i style="--h:51%;--c:#F4F4F2" class="lt"></i><b>5 × 2</b></div>
+            <div><i style="--h:42%;--c:#1D1F22" class="dk"></i><b>2.5 × 2</b></div>
+            <div><i style="--h:36%;--c:#C9CED4" class="lt"></i><b>1.25 × 2</b></div>
+          </div>
+        </div>
+        <div class="zl-tile">
+          <div class="zl-tile-big num">81.1%</div>
+          <h3>RPE built in.</h3>
+          <p>Five reps at RPE 8 is 81.1% of your max. Enter how hard a set felt and get a better estimate.</p>
+        </div>
+        <div class="zl-tile">
+          <h3>5/3/1, rounded for you.</h3>
+          <p>Four weeks of sets from your training max, each one loadable.</p>
+          <div class="zl-tile-visual pm-v-531" aria-hidden="true">
+            <span>65%</span><b>82.5 × 5</b>
+            <span>75%</span><b>95 × 5</b>
+            <span>85%</span><b>107.5 × 5+</b>
+          </div>
+        </div>
+        <div class="zl-tile wide">
+          <h3>Watch your max climb.</h3>
+          <p>Log sets in seconds. Plate Math charts your estimated one-rep max for each lift and calls out every personal record.</p>
+          <div class="zl-tile-visual" aria-hidden="true">
+            <svg class="pm-v-spark" viewBox="0 0 600 120" preserveAspectRatio="none">
+              <defs><linearGradient id="spark-fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".22"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
+              <path d="M8 98 L82 90 L156 92 L230 74 L304 70 L378 76 L452 52 L526 40 L592 22 L592 118 L8 118Z" fill="url(#spark-fill)"/>
+              <path d="M8 98 L82 90 L156 92 L230 74 L304 70 L378 76 L452 52 L526 40 L592 22" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="592" cy="22" r="6" fill="var(--accent)"/><circle cx="592" cy="22" r="11" fill="none" stroke="var(--accent)" stroke-opacity=".35" stroke-width="2"/>
+            </svg>
+          </div>
+        </div>
+        <div class="zl-tile">
+          <h3>Closest weights, both ways.</h3>
+          <p>Asked for 21 kg? You'll see 20 and 22.5, one tap to load either.</p>
+          <div class="zl-tile-visual pm-v-near" aria-hidden="true"><span class="pm-v-ask num">21</span><span class="pm-v-opt num">20</span><span class="pm-v-opt num">22.5</span></div>
+        </div>
+        <div class="zl-tile">
+          <h3>Competition colours.</h3>
+          <p>Red 25s, blue 20s, yellow 15s. The weight is printed on every plate.</p>
+          <div class="zl-tile-visual pm-v-dots" aria-hidden="true"><i style="--c:#D7263D"></i><i style="--c:#1E5BC6"></i><i style="--c:#F2C230"></i><i style="--c:#23864A"></i><i style="--c:#F4F4F2" class="lt"></i><i style="--c:#1D1F22" class="dk"></i></div>
+        </div>
+        <div class="zl-tile">
+          <div class="zl-tile-big num">kg <span class="pm-v-slash">/</span> lb</div>
+          <h3>Your units, your bar.</h3>
+          <p>A full pound plate set with 45 and 35 lb bars, or 20, 15 and 10 kg. Custom bars too.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="zl-section alt" id="faq" data-nav="FAQ">
+    <div class="zl-wrap">
+      <div class="zl-section-head center zl-reveal"><h2>Questions</h2></div>
+      <div class="zl-faq zl-reveal">
+        <details><summary>How does it choose the plates?</summary><div>It takes as many of the heaviest plate as fit, limited by how many pairs you own, then works down the sizes. If that misses, it checks every combination you own for an exact match. If none exists, it shows the nearest weights you can load below and above.</div></details>
+        <details><summary>Why does the step change from 2.5 kg?</summary><div>The minus and plus buttons move by one pair of your smallest plate. With 1.25 kg plates that's 2.5 kg. Add 0.5 kg fractional plates under My plates and the step drops to 1 kg.</div></details>
+        <details><summary>Which 1RM estimate should I trust?</summary><div>None is exact. Plate Math averages Epley, Brzycki and Lombardi, which agree closely between 2 and 10 reps. For heavy top sets, the RPE method is usually closer, because it accounts for how many reps you had left.</div></details>
+        <details><summary>What is a training max in 5/3/1?</summary><div>A slightly reduced 1RM, usually 85 to 90% of your true max. Every 5/3/1 percentage is taken from it, which keeps the work submaximal so you can keep adding weight for months. Week 4 is a lighter deload.</div></details>
+        <details><summary>Do collars count toward the weight?</summary><div>Turn on Collars if you use competition collars, which weigh 2.5 kg a pair (5 lb in pounds mode). Leave it off for spring clips, which weigh next to nothing.</div></details>
+        <details><summary>Where is my data stored?</summary><div>Only on this device, in your browser's storage. Nothing is uploaded. Use Export CSV in the Log to keep a copy or move it to a spreadsheet.</div></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div data-zl="footer"></div>
+<script src="logic.js"></script>
+<script src="bar.js"></script>
+<script src="chart.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
